@@ -1,20 +1,14 @@
+require('dotenv').config()
+const dbConfig = require("./config/db")[process.env['APP_ENV']]
+const { criticalLog, warningLog, debugLog } = require('./config/logger')
 
-// import { readdirSync } from "node:fs"
+warningLog('warning message')
+debugLog('debug message')
 
-// const myClass = new A('John')
 
-// console.log(myClass.getName())
+try {
+    console.log(abc)
 
-const module1 = require("./module1")
-const fn2 = require("./module2")
-// import { MOD_3 } from "./folder1/module3.js" //   . ..    /app/Wp/
-
-module1.fn()
-fn2()
-
-// const myObj = new module1('Ann')
-
-// const files = readdirSync('.')
-// files.forEach(file => console.log({ file }))
-
-// console.log(module1.getName())
+} catch (error) {
+    criticalLog(error)
+}
