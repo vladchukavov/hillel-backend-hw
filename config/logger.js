@@ -1,4 +1,4 @@
-
+const path = require('path')
 
 const levels = [
     'Emergency',
@@ -17,13 +17,11 @@ const availableLevel = {
     Debug: "Debug"
 }
 
-const logger = (level, arg) => {
-
+const logger = (level, ...args) => {
     const env = process.env['APP_ENV']
 
     if (!levels.includes(level))
         throw new Error('invalid log level')
-
 
     if (env === 'prod' && levels.indexOf(level) > 3)
         return
@@ -31,19 +29,30 @@ const logger = (level, arg) => {
     if (env === 'dev' && levels.indexOf(level) > 5)
         return
 
-    console.log(`Log level: ${level}, message: ${arg}`)
+    args.forEach(arg => {
+        try {
+            if (arg instanceof Error) {
+                const errorInfo = `Error occurred in file: ${path.basename(__filename)} - ${arg.stack}`
+                console.error(`Log level: ${level}, message: ${arg.message}\n${errorInfo}`)
+            } else {
+                console.log(`Log level: ${level}, message: ${arg}`)
+            }
+        } catch (error) {
+            console.error(`Error in logger: ${error.message}`)
+        }
+    })
 }
 
-const criticalLog = (msg) => {
-    logger(availableLevel.Critical, msg)
+const criticalLog = (...args) => {
+    logger(availableLevel.Critical, ...args)
 }
 
-const warningLog = (msg) => {
-    logger(availableLevel.Warning, msg)
+const warningLog = (...args) => {
+    logger(availableLevel.Warning, ...args)
 }
 
-const debugLog = (msg) => {
-    logger(availableLevel.Debug, msg)
+const debugLog = (...args) => {
+    logger(availableLevel.Debug, ...args)
 }
 
 module.exports = {
